@@ -14,6 +14,15 @@ INPUT_URI='http://ec2-52-24-126-225.us-west-2.compute.amazonaws.com'
 INPUT_PORT=81
 
 class Namespace(BaseNamespace):
+
+  def run_roslaunch(self, mission_number):
+    roslauch_process = Popen(['roslaunch', 'multirobot', '{}.launch'.format(mission_number)], stdout=PIPE, stderr=PIPE)
+    
+    for line in roslaunch.stdout:
+      if "odom received!" in line:
+        self.emit('initialized', "{} initialized!")
+        break
+
   def on_tester(self, *args):
     print('test: ', args)
 
@@ -27,7 +36,8 @@ class Namespace(BaseNamespace):
     }
 
     mission_number = "Control & Mapping: ", switch_case.get(args[0], "Nothing found!!")
-    #roslauch_process = Popen(['roslaunch', 'multirobot', '{}.launch'.format(mission_number)], stdout=PIPE, stderr=PIPE)
+    print("Running roslaunch file (test)")
+    #run_roslaunch(mission_number)
 
     self.emit('initialized', mission_number)
 
