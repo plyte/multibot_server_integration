@@ -52,7 +52,7 @@ class Namespace(BaseNamespace):
 
         message_emit = "Control & Mapping: ", switch_case.get(message, "received a message, but the message did not match the expected format of mission#.")
         
-        if len(message_emit) < 30:
+        if len(message_emit) < 60:
             self.emit('cminitializemission', 'Initializing gazebo environment')       
             run_roslaunch(self, message)
         else: 
