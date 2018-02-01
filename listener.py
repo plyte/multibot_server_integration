@@ -9,8 +9,7 @@ from socketIO_client import SocketIO
 
 from subprocess import Popen, PIPE
 
-# 'http://ec2-52-24-126-225.us-west-2.compute.amazonaws.com'
-# 81
+
 INPUT_URI='http://ec2-52-24-126-225.us-west-2.compute.amazonaws.com'
 INPUT_PORT=81
 
@@ -49,17 +48,12 @@ class Listener(object):
       print("Mission Initialized!")
 
   def listen(self):
-    
+
     socketio = SocketIO('http://ec2-52-24-126-225.us-west-2.compute.amazonaws.com', 81, LoggingNamespace)
     io = socketio.define(Namespace, '/socket.io')
 
     while True:
-      socketio.wait(seconds=1)
-
-    
-    #socketio.on('tester', test)
-    #socketio.emit('testee', 'asdf')
-    
+      socketio.wait(seconds=1)    
 
 
 if __name__ == "__main__":
