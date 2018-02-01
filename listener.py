@@ -26,10 +26,7 @@ class Namespace(BaseNamespace):
       "mission5": "mission5 initialized"
     }
 
-    #print(type(args))
-
     mission_number = "Control & Mapping: ", switch_case.get(args[0], "Nothing found!!")
-    #print(mission_number)
     #roslauch_process = Popen(['roslaunch', 'multirobot', '{}.launch'.format(mission_number)], stdout=PIPE, stderr=PIPE)
 
     self.emit('initialized', mission_number)
