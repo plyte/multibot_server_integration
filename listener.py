@@ -23,6 +23,9 @@ class Namespace(BaseNamespace):
         self.emit('initialized', "{} initialized!")
         break
 
+  def on_cmstartmission(self, *args):
+    print('Starting {}'.format(args[0]))
+
   def on_tester(self, *args):
     print('test: ', args)
 
@@ -35,7 +38,7 @@ class Namespace(BaseNamespace):
       "mission5": "mission5 initialized"
     }
 
-    mission_number = "Control & Mapping: ", switch_case.get(args[0], "Nothing found!!")
+    mission_number = "Control & Mapping: ", switch_case.get(args[0], "received a message, but the message did not match the expected format.")
     print("Running roslaunch file (test)")
     #run_roslaunch(mission_number)
 
