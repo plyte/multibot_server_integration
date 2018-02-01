@@ -49,24 +49,7 @@ class Listener(object):
       print("Mission Initialized!")
 
   def listen(self):
-
-    def check_message_recieved(*args):
-      switch_case = {
-        "mission1": "hellomission1",
-        "mission2": "hellomission2",
-        "mission3": "hellomission3",
-        "mission4": "hellomission4",
-        "mission5": "hellomission5"
-      }
-
-      mission_number = switch_case.get(args, "Nothing found!!")
-      print(mission_number)
-      #roslauch_process = Popen(['roslaunch', 'multirobot', '{}.launch'.format(mission_number)], stdout=PIPE, stderr=PIPE)
-
-      socketio.emit('cm-mission-initialized', mission_number)
-
-
-    #print("Currently listening on {} on port {}".format(INPUT_URI, INPUT_PORT))
+    
     socketio = SocketIO('http://ec2-52-24-126-225.us-west-2.compute.amazonaws.com', 81, LoggingNamespace)
     io = socketio.define(Namespace, '/socket.io')
 
