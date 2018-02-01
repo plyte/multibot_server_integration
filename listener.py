@@ -12,16 +12,10 @@ from subprocess import Popen, PIPE
 
 INPUT_URI='http://ec2-52-24-126-225.us-west-2.compute.amazonaws.com'
 INPUT_PORT=81
+verbose=True
+mission_number = ""
 
 class Namespace(BaseNamespace):
-
-  def run_roslaunch(self, mission_number):
-    roslauch_process = Popen(['roslaunch', 'multirobot', '{}.launch'.format(mission_number)], stdout=PIPE, stderr=PIPE)
-    
-    for line in roslaunch.stdout:
-      if "odom received!" in line:
-        self.emit('initialized', "{} initialized!")
-        break
 
   def on_cmstartmission(self, *args):
     print('Starting {}'.format(args[0]))
@@ -30,23 +24,43 @@ class Namespace(BaseNamespace):
     print('test: ', args)
 
   def on_cminitializemission(self, *args):
-    switch_case = {
-      "mission1": "mission1 initialized",
-      "mission2": "mission2 initialized",
-      "mission3": "mission3 initialized",
-      "mission4": "mission4 initialized",
-      "mission5": "mission5 initialized"
-    }
 
-    mission_number = "Control & Mapping: ", switch_case.get(args[0], "received a message, but the message did not match the expected format.")
-    print("Running roslaunch file (test)")
-    #run_roslaunch(mission_number)
+    counter=0
 
-    self.emit('initialized', mission_number)
+    def run_roslaunch(self, message):
 
-  def on_something(self, *args):
-    print(args)
-    
+        roslauch_process = Popen('roslaunch multirobot {}.launch'.format(message), stdout=PIPE, stderr=PIPE, shell=True)
+        
+        for line in roslauch_process.stdout:
+          if verbose: print(line)
+
+          if "odom received!" in line:
+            self.emit('initialized', "{} initialized!")
+            break
+
+    def check_switch_case(self, message):
+        global mission_number
+
+        switch_case = {
+          "mission1": "mission1 initialized",
+          "mission2": "mission2 initialized",
+          "mission3": "mission3 initialized",
+          "mission4": "mission4 initialized",
+          "mission5": "mission5 initialized"
+        }
+        
+
+        message_emit = "Control & Mapping: ", switch_case.get(message, "received a message, but the message did not match the expected format of mission#.")
+        
+        if len(message_emit) < 30:
+            self.emit('cminitializemission', 'Initializing gazebo environment')       
+            run_roslaunch(self, message)
+        else: 
+            self.emit('cminitializemission', message_emit)
+
+    if counter == 0:
+        check_switch_case(self, args[0])
+        counter+=1
 
 class Listener(object):
 
@@ -58,8 +72,8 @@ class Listener(object):
       print("Mission Initialized!")
 
   def listen(self):
-
-    socketio = SocketIO('http://ec2-52-24-126-225.us-west-2.compute.amazonaws.com', 81, LoggingNamespace)
+    print('Listening on {} with port {}'.format(INPUT_URI, INPUT_PORT))
+    socketio = SocketIO(INPUT_URI, INPUT_PORT, LoggingNamespace)
     io = socketio.define(Namespace, '/socket.io')
 
     while True:
