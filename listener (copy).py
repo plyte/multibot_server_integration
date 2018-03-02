@@ -41,7 +41,7 @@ class Namespace(BaseNamespace):
   def on_tester(self, *args):
     print('test: ', args)
 
-  #@run_once
+  @run_once
   def on_cminitializemission(self, *args):
     global roslaunch_process
     counter=0
@@ -51,14 +51,12 @@ class Namespace(BaseNamespace):
 
         self.emit('initialized', "{} initialized!".format(message))
         print('attempting roslaunch')
-        print(message)
 
-        #start_cmd = 'gnome-terminal --title "run_mission" -x '
-        #actual_cmd = 'roslaunch multirobot run_mission.launch mission_string:={} && '.format(message)
-        #end_script = 'echo $$ > /var/tmp/run_mission.pid'
+        start_cmd = 'gnome-terminal --title "run_mission" -x '
+        actual_cmd = 'roslaunch multirobot run_mission.launch mission_string:={} && '.format(message)
+        end_script = 'echo $$ > /var/tmp/run_mission.pid'
 
-        #station4_cmd = 'gnome-terminal -x roslaunch multirobot run_mission.launch mission_string:={};'.format(message)
-        station4_cmd = 'gnome-terminal -x xterm -e roslaunch multirobot run_mission.launch mission_string:={};'.format(message)
+        station4_cmd = 'gnome-terminal -x roslaunch multirobot run_mission.launch mission_string:={};'.format(message)
         #sleep_cmd = ' sleep 60s;'
         #station1_cmd = ' gnome-terminal -x ssh -tt station1 -t "roslaunch multirobot run_mission.launch mission_string:={};'.format(message)
         
@@ -102,17 +100,16 @@ class Namespace(BaseNamespace):
         check_switch_case(self, args[0])
         counter+=1
 
-  #@run_once
+  @run_once
   def on_cmstopmission(self, *args):
     global roslaunch_process
     print('killing package')
 
-    #os.system('gnome-terminal -x xdotool getactivewindow windowkill')
-    os.system('killall xterm')
+    os.system('gnome-terminal -x xdotool getactivewindow windowkill')
     #os.system('pkill -F /var/tmp/run_mission.pid')
     
-    #roslaunch_process.kill()
-    #os.killpg(os.getpgid(roslaunch_process.pid), signal.SIGTERM)
+    roslaunch_process.kill()
+    os.killpg(os.getpgid(roslaunch_process.pid), signal.SIGTERM)
 
     poll = roslaunch_process.poll()
     if poll == None:
@@ -121,7 +118,7 @@ class Namespace(BaseNamespace):
       print('Subprocess is dead')
 
     os.system('killall -9 roscore; killall -9 rosmaster')
-    #sys.exit(0)
+    sys.exit(0)
 
 class Listener(object):
 
