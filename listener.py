@@ -41,7 +41,6 @@ class Namespace(BaseNamespace):
   def on_tester(self, *args):
     print('test: ', args)
 
-  #@run_once
   def on_cminitializemission(self, *args):
     global roslaunch_process
     counter=0
@@ -98,9 +97,7 @@ class Namespace(BaseNamespace):
         else: 
             self.emit('cm-initialize-mission', message_emit)
 
-    if counter == 0:
-        check_switch_case(self, args[0])
-        counter+=1
+    check_switch_case(self, args[0])
 
   #@run_once
   def on_cmstopmission(self, *args):
@@ -115,13 +112,14 @@ class Namespace(BaseNamespace):
     #os.killpg(os.getpgid(roslaunch_process.pid), signal.SIGTERM)
 
     poll = roslaunch_process.poll()
+
     if poll == None:
       print('Subprocess is still alive')
     else:
       print('Subprocess is dead')
 
     os.system('killall -9 roscore; killall -9 rosmaster')
-    #sys.exit(0)
+
 
 class Listener(object):
 
