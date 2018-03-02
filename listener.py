@@ -50,25 +50,10 @@ class Namespace(BaseNamespace):
 
         self.emit('initialized', "{} initialized!".format(message))
         print('attempting roslaunch')
-        print(message)
 
-        #start_cmd = 'gnome-terminal --title "run_mission" -x '
-        #actual_cmd = 'roslaunch multirobot run_mission.launch mission_string:={} && '.format(message)
-        #end_script = 'echo $$ > /var/tmp/run_mission.pid'
-
-        #station4_cmd = 'gnome-terminal -x roslaunch multirobot run_mission.launch mission_string:={};'.format(message)
         station4_cmd = 'gnome-terminal -x xterm -e roslaunch multirobot run_mission.launch mission_string:={};'.format(message)
-        #sleep_cmd = ' sleep 60s;'
-        #station1_cmd = ' gnome-terminal -x ssh -tt station1 -t "roslaunch multirobot run_mission.launch mission_string:={};'.format(message)
         
-        #cmd = station4_cmd + sleep_cmd + station1_cmd
-        #cmd =  start_cmd + actual_cmd + end_script
         roslaunch_process = Popen(station4_cmd, stdout=PIPE, stderr=PIPE, shell=True, preexec_fn=os.setsid)
-        #print('ran roslaunch on station 4, starting on station 1 in 60 seconds')
-        #time.sleep(60)
-        #roslaunch_station1 = Popen(station1_cmd, stdout=PIPE, stderr=PIPE, shell=True)
-        #time.sleep(60)
-        #os.system('gnome-terminal -x ssh station3 -t "cd ~/Documents/detection; source devel/setup.bash; roslaunch multirobot.launch"')
         
         for line in roslaunch_process.stdout:
           if verbose: print(line)
@@ -99,17 +84,10 @@ class Namespace(BaseNamespace):
 
     check_switch_case(self, args[0])
 
-  #@run_once
   def on_cmstopmission(self, *args):
     global roslaunch_process
     print('killing package')
-
-    #os.system('gnome-terminal -x xdotool getactivewindow windowkill')
     os.system('killall xterm')
-    #os.system('pkill -F /var/tmp/run_mission.pid')
-    
-    #roslaunch_process.kill()
-    #os.killpg(os.getpgid(roslaunch_process.pid), signal.SIGTERM)
 
     poll = roslaunch_process.poll()
 
